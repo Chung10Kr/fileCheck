@@ -1,0 +1,91 @@
+import hashlib
+import os
+
+
+#md5 hash값 구하기
+def getMd5(filepath): 
+    f = open(filepath, 'rb')
+    data = f.read()
+    f.close()
+    return hashlib.md5(data).hexdigest()
+
+#파일리스트 파일명 , md5값 저장
+def getfilelist(list):
+    return_list = []
+    for file in list:
+        return_list.append( file.replace('local_File','').replace('server_File','') )
+    return return_list        
+
+#디렉토리 하위디렉토리 파일 찾기
+file_list = []
+def search(dirname): 
+    filenames = os.listdir(dirname)
+    for filename in filenames:
+        full_filename = os.path.join(dirname,filename)
+        if os.path.isdir(full_filename):
+            search(full_filename)
+        else:
+            
+            file_list.append(full_filename)
+            
+    
+    
+#local 폴더 파일 찾기
+search('local_File');
+local_file = file_list.copy()
+
+# file_list 값 초기화
+file_list=[] 
+
+#server 폴더 파일 찾기
+search('server_File');
+server_file = file_list.copy()
+
+
+# 파일의 md5값 , 파일명 return
+local_list = getfilelist( local_file )
+server_list = getfilelist( server_file )
+
+local_list.sort()
+server_list.sort()
+
+
+#일치 불일치 여부 판단 및 출력
+print("-----불일치 목록-----")
+for local in local_list:
+    for server in server_list:
+        if local == server:
+            local_md5 = getMd5('local_File\\'+local)
+            server_md5 = getMd5('server_File\\'+server)
+            if local_md5 == server_md5:
+                continue
+            else:
+                print(local)
+
+
+print("-----신규파일 목록-----")
+for local in local_list:
+    if local not in server_list:
+        print(local)
+
+print("-----삭제파일 목록-----")
+for server in server_list:
+    if server not in local_list:
+        print(server)
+        
+            
+        
+            
+            
+            
+        
+            
+
+                
+
+
+
+
+
+
+    

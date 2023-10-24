@@ -2,7 +2,7 @@
 
 # run
 ```
-py3 app.py
+python3 app.py
 ```
 
 # dist
